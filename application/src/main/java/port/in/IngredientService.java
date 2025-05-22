@@ -1,52 +1,19 @@
 package port.in;
 
+import domain.model.Ingredient;
 
-import dto.IngredientDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import java.util.List;
 import java.util.Optional;
 
-/**
- * Service Interface for managing {@link com.parolaraul.recipeapi.domain.Ingredient}.
- */
 public interface IngredientService {
-    /**
-     * Save an ingredient.
-     *
-     * @param ingredientDTO the entity to save.
-     * @return the persisted entity.
-     */
-    IngredientDTO save(IngredientDTO ingredientDTO);
 
-    /**
-     * Updates an ingredient.
-     *
-     * @param ingredientDTO the entity to update.
-     * @return the persisted entity.
-     */
-    IngredientDTO update(IngredientDTO ingredientDTO);
+    Ingredient save(Ingredient ingredient);
 
-    /**
-     * Get all the ingredients.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    Page<IngredientDTO> findAll(Pageable pageable);
+    Ingredient update(Ingredient ingredient);
 
-    /**
-     * Get the "id" ingredient.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
-    Optional<IngredientDTO> findOne(Long id);
+    List<Ingredient> findAll(int page, int size);
 
-    /**
-     * Delete the "id" ingredient.
-     *
-     * @param id the id of the entity.
-     */
+    Optional<Ingredient> findOne(Long id);
+
     void delete(Long id);
 }

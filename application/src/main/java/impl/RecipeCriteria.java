@@ -1,6 +1,8 @@
 package impl;
 
-import com.parolaraul.recipeapi.domain.RecipeCategory;
+
+
+import domain.model.RecipeCategory;
 
 import java.util.Objects;
 

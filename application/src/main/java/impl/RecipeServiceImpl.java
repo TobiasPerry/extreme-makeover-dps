@@ -1,63 +1,40 @@
 package impl;
 
 
+
 import domain.model.Recipe;
-import dto.RecipeDTO;
-import mapper.RecipeMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import port.in.RecipeService;
 import port.out.RecipeRepository;
 
 import java.util.Optional;
 
-/**
- * Service Implementation for managing {@link Recipe}.
- */
 @Service
-@Transactional
 public class RecipeServiceImpl implements RecipeService {
-
-    private final Logger log = LoggerFactory.getLogger(RecipeServiceImpl.class);
 
     private final RecipeRepository recipeRepository;
 
-    private final RecipeMapper recipeMapper;
-
-    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeMapper recipeMapper) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository) {
         this.recipeRepository = recipeRepository;
-        this.recipeMapper = recipeMapper;
     }
 
     @Override
-    public RecipeDTO save(RecipeDTO recipeDTO) {
-        log.debug("Request to save Recipe : {}", recipeDTO);
-        Recipe recipe = recipeMapper.toEntity(recipeDTO);
-        recipe = recipeRepository.save(recipe);
-        return recipeMapper.toDto(recipe);
+    public Recipe save(Recipe recipe) {
+        return recipeRepository.save(recipe);
     }
 
     @Override
-    public RecipeDTO update(RecipeDTO recipeDTO) {
-        log.debug("Request to update Recipe : {}", recipeDTO);
-        Recipe recipe = recipeMapper.toEntity(recipeDTO);
-        recipe = recipeRepository.save(recipe);
-        return recipeMapper.toDto(recipe);
+    public Recipe update(Recipe recipe) {
+        return recipeRepository.save(recipe);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<RecipeDTO> findOne(Long id) {
-        log.debug("Request to get Recipe : {}", id);
-        return recipeRepository.findById(id).map(recipeMapper::toDto);
+    public Optional<Recipe> findOne(Long id) {
+        return recipeRepository.findById(id);
     }
 
     @Override
     public void delete(Long id) {
-        log.debug("Request to delete Recipe : {}", id);
         recipeRepository.deleteById(id);
     }
-
 }

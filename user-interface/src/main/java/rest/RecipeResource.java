@@ -2,7 +2,7 @@ package rest;
 
 
 import dto.RecipeDTO;
-import port.in.RecipeQBService;
+import port.in.RecipeQueryService;
 import port.in.RecipeService;
 import port.out.RecipeRepository;
 import rest.exceptions.BadRequestException;
@@ -38,13 +38,13 @@ public class RecipeResource {
 
     private final RecipeService recipeService;
 
-    private final RecipeQBService recipeQBService;
+    private final RecipeQueryService recipeQueryService;
 
     private final RecipeRepository recipeRepository;
 
-    public RecipeResource(RecipeService recipeService, RecipeQBService recipeQBService, RecipeRepository recipeRepository) {
+    public RecipeResource(RecipeService recipeService, RecipeQueryService recipeQueryService, RecipeRepository recipeRepository) {
         this.recipeService = recipeService;
-        this.recipeQBService = recipeQBService;
+        this.recipeQueryService = recipeQueryService;
         this.recipeRepository = recipeRepository;
     }
 
@@ -112,7 +112,7 @@ public class RecipeResource {
                                                                 @org.springdoc.api.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get Recipes by criteria");
-        Page<RecipeDTO> page = recipeQBService.findByCriteria(criteria, pageable);
+        Page<RecipeDTO> page = recipeQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
