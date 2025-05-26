@@ -1,6 +1,6 @@
 package dto;
 
-import com.parolaraul.recipeapi.domain.RecipeCategory;
+import domain.model.RecipeCategory;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 

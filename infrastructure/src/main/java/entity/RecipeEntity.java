@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import domain.model.Recipe;
 import domain.model.RecipeCategory;
 import jakarta.persistence.*;
+import jakarta.persistence.metamodel.StaticMetamodel;
 
 import java.io.Serializable;
 import java.util.HashSet;

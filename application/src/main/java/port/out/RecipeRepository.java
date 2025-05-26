@@ -21,6 +21,7 @@ public interface RecipeRepository {
     List<Recipe> findAllWithIngredientsByIds(List<Long> ids);
     Recipe save(Recipe recipe);
     void deleteById(Long id);
+    boolean existsById(Long id);
 
     List<Recipe> findByCriteria(RecipeCriteria criteria, int page, int size);
 }

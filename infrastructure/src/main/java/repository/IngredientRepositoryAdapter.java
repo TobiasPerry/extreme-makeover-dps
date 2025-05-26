@@ -45,5 +45,10 @@ public class IngredientRepositoryAdapter implements IngredientRepository {
     public void deleteById(Long id) {
         jpaIngredientRepository.deleteById(id);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return jpaIngredientRepository.existsById(id);
+    }
 }
 

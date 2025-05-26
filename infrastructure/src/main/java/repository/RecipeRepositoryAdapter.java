@@ -1,10 +1,13 @@
 package repository;
 
 
+import entity.IngredientEntity_;
 import entity.RecipeEntity;
 import domain.model.Recipe;
+import entity.RecipeEntity_;
 import impl.RecipeCriteria;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.metamodel.StaticMetamodel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -96,4 +99,10 @@ public class RecipeRepositoryAdapter implements RecipeRepository {
 
         return specification;
     }
+
+    @Override
+    public boolean existsById(Long id){
+        return jpaRecipeRepository.existsById(id);
+    }
+
 }

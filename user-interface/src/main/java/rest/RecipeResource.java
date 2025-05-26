@@ -1,7 +1,11 @@
 package rest;
 
 
+import domain.model.Ingredient;
+import domain.model.Recipe;
+import dto.IngredientDTO;
 import dto.RecipeDTO;
+import mapper.RecipeMapper;
 import port.in.RecipeQueryService;
 import port.in.RecipeService;
 import port.out.RecipeRepository;
@@ -42,10 +46,13 @@ public class RecipeResource {
 
     private final RecipeRepository recipeRepository;
 
-    public RecipeResource(RecipeService recipeService, RecipeQueryService recipeQueryService, RecipeRepository recipeRepository) {
+    private final RecipeMapper recipeMapper;
+
+    public RecipeResource(RecipeService recipeService, RecipeQueryService recipeQueryService, RecipeRepository recipeRepository, RecipeMapper recipeMapper) {
         this.recipeService = recipeService;
         this.recipeQueryService = recipeQueryService;
         this.recipeRepository = recipeRepository;
+        this.recipeMapper = recipeMapper;
     }
 
     /**
@@ -61,7 +68,7 @@ public class RecipeResource {
         if (recipeDTO.id() != null) {
             throw new BadRequestException("A new recipe cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        RecipeDTO result = recipeService.save(recipeDTO);
+        RecipeDTO result = recipeMapper.toDto(recipeService.save(recipeMapper.toEntity(recipeDTO)));
         return ResponseEntity
                 .created(new URI("/api/recipes/" + result.id()))
                 .body(result);
@@ -94,7 +101,7 @@ public class RecipeResource {
             throw new BadRequestException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        RecipeDTO result = recipeService.update(recipeDTO);
+        RecipeDTO result = recipeMapper.toDto(recipeService.update(recipeMapper.toEntity(recipeDTO)));
         return ResponseEntity
                 .ok()
                 .body(result);
@@ -104,17 +111,18 @@ public class RecipeResource {
      * {@code GET  /recipes} : get recipes based on criteria or all.
      *
      * @param criteria the defining the filtering criteria.
-     * @param pageable the pagination information.
+     * @param pageNumber the page number.
+     * @param pageSize the page size
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of recipes in body.
      */
     @GetMapping("/recipes")
     public ResponseEntity<List<RecipeDTO>> getRecipesByCriteria(RecipeCriteria criteria,
-                                                                @org.springdoc.api.annotations.ParameterObject Pageable pageable
-    ) {
+                                                                @RequestParam int pageSize, @RequestParam int pageNumber) {
         log.debug("REST request to get Recipes by criteria");
-        Page<RecipeDTO> page = recipeQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        List<Recipe> recipes = recipeQueryService.findByCriteria(criteria, pageNumber, pageSize);
+        List < RecipeDTO > dtoList = recipes.stream().map(recipeMapper::toDto).toList();
+
+        return ResponseEntity.ok().body(dtoList);
     }
 
     /**
@@ -126,8 +134,8 @@ public class RecipeResource {
     @GetMapping("/recipes/{id}")
     public ResponseEntity<RecipeDTO> getRecipe(@PathVariable Long id) {
         log.debug("REST request to get Recipe : {}", id);
-        Optional<RecipeDTO> recipeDTO = recipeService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(recipeDTO, ENTITY_NAME, id);
+        Optional<Recipe> ingredient = recipeService.findOne(id);
+        return ingredient.map(value -> ResponseEntity.ok().body(recipeMapper.toDto(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**

@@ -1,23 +1,20 @@
 package rest;
 
 
+import domain.model.Ingredient;
 import dto.IngredientDTO;
+import mapper.IngredientMapper;
 import port.in.IngredientService;
 import port.out.IngredientRepository;
 import rest.exceptions.BadRequestException;
-import rest.util.PaginationUtil;
-import rest.util.ResponseUtil;
 
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,9 +37,12 @@ public class IngredientResource {
 
     private final IngredientRepository ingredientRepository;
 
-    public IngredientResource(IngredientService ingredientService, IngredientRepository ingredientRepository) {
+    private final IngredientMapper ingredientMapper;
+
+    public IngredientResource(IngredientService ingredientService, IngredientRepository ingredientRepository, IngredientMapper ingredientMapper) {
         this.ingredientService = ingredientService;
         this.ingredientRepository = ingredientRepository;
+        this.ingredientMapper = ingredientMapper;
     }
 
     /**
@@ -61,7 +61,7 @@ public class IngredientResource {
         if (ingredientDTO.name() == null) {
             throw new BadRequestException("Name must be present", ENTITY_NAME, "namenull");
         }
-        IngredientDTO result = ingredientService.save(ingredientDTO);
+        IngredientDTO result = ingredientMapper.toDto(ingredientService.save( ingredientMapper.toEntity(ingredientDTO) ));
         return ResponseEntity
                 .created(new URI("/api/ingredients/" + result.id()))
                 .body(result);
@@ -94,7 +94,7 @@ public class IngredientResource {
             throw new BadRequestException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        IngredientDTO result = ingredientService.update(ingredientDTO);
+        IngredientDTO result = ingredientMapper.toDto(ingredientService.update(ingredientMapper.toEntity(ingredientDTO) ));
         return ResponseEntity
                 .ok()
                 .body(result);
@@ -102,17 +102,23 @@ public class IngredientResource {
 
     /**
      * {@code GET  /ingredients} : get all the ingredients.
-     *
-     * @param pageable the pagination information.
+     * @param pageNumber the page number.
+     * @param pageSize the page size
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ingredients in body.
      */
     @GetMapping("/ingredients")
-    public ResponseEntity<List<IngredientDTO>> getAllIngredients(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
-        log.debug("REST request to get a page of Ingredients");
-        Page<IngredientDTO> page = ingredientService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    public ResponseEntity<List<IngredientDTO>> getAllIngredients(@RequestParam int pageSize, @RequestParam int pageNumber) {
+        log.debug("REST request to get a list of Ingredients");
+
+        List<Ingredient> ingredients = ingredientService.findAll(pageSize, pageNumber);
+
+        List<IngredientDTO> dtoList = ingredients.stream()
+                .map(ingredientMapper::toDto)
+                .toList();
+
+        return ResponseEntity.ok().body(dtoList);
     }
+
 
     /**
      * {@code GET  /ingredients/:id} : get the "id" ingredient.
@@ -123,8 +129,8 @@ public class IngredientResource {
     @GetMapping("/ingredients/{id}")
     public ResponseEntity<IngredientDTO> getIngredient(@PathVariable Long id) {
         log.debug("REST request to get Ingredient : {}", id);
-        Optional<IngredientDTO> ingredientDTO = ingredientService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(ingredientDTO, ENTITY_NAME, id);
+        Optional<Ingredient> ingredient = ingredientService.findOne(id);
+        return ingredient.map(value -> ResponseEntity.ok().body(ingredientMapper.toDto(value))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**

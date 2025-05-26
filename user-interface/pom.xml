@@ -14,30 +14,14 @@
     <dependencies>
         <dependency>
             <groupId>com.example</groupId>
-            <artifactId>application</artifactId>
+            <artifactId>domain</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-common</artifactId>
-            <version>1.6.15</version>
+            <groupId>com.example</groupId>
+            <artifactId>application</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project> 
