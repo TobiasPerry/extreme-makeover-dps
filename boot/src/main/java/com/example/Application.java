@@ -9,12 +9,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 
 import java.util.Optional;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 @EnableConfigurationProperties({ApplicationProperties.class})
+@ComponentScan(basePackages = {
+        "com.example",          // módulo boot// donde esté tu SecurityConfig
+        "config"                     // si está directamente ahí
+})
 public class Application {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
