@@ -1,7 +1,7 @@
 package com.example.rest;
 
-
 import com.example.IntegrationTest;
+import com.example.config.TestSecurityConfig;
 import com.example.domain.model.Ingredient;
 import com.example.userinterface.dto.IngredientDTO;
 import jakarta.persistence.EntityManager;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +30,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @IntegrationTest
 @AutoConfigureMockMvc
+@Import(TestSecurityConfig.class)
 class IngredientResourceIT {
 
     private static final String API_KEY_HEADER = "x-api-key";
-    private static final String APIKey = "8ba20537-61f2-4ccd-a796-39478a6149a7";
+    private static final String APIKey = TestSecurityConfig.TEST_API_KEY;
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";

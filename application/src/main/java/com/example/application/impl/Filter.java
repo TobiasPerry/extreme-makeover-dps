@@ -2,6 +2,7 @@ package com.example.application.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Filter<FIELD_TYPE> {
     private FIELD_TYPE eq;
@@ -73,6 +74,24 @@ public class Filter<FIELD_TYPE> {
 
     public void setNotContains(FIELD_TYPE notContains) {
         this.notContains = notContains;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Filter)) return false;
+        Filter<?> filter = (Filter<?>) o;
+        return Objects.equals(eq, filter.eq) &&
+               Objects.equals(neq, filter.neq) &&
+               Objects.equals(in, filter.in) &&
+               Objects.equals(nin, filter.nin) &&
+               Objects.equals(contains, filter.contains) &&
+               Objects.equals(notContains, filter.notContains);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eq, neq, in, nin, contains, notContains);
     }
 
     @Override

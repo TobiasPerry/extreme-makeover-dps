@@ -8,7 +8,6 @@ import jakarta.persistence.metamodel.SingularAttribute;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-
 import java.util.function.Function;
 
 @Component
@@ -29,22 +28,19 @@ public class QueryBuilderService<E> {
         } else if (filter.getIn() != null) {
             return (root, query, builder) -> {
                 CriteriaBuilder.In<X> in = builder.in(metaclassFn.apply(root));
-                for (X value : filter.getIn()) {
-                    in = in.value(value);
-                }
+                filter.getIn().forEach(in::value);
                 return in;
             };
         } else if (filter.getNin() != null) {
             return (root, query, builder) -> {
                 CriteriaBuilder.In<X> in = builder.in(metaclassFn.apply(root));
-                for (X value : filter.getNin()) {
-                    in = in.value(value);
-                }
+                filter.getNin().forEach(in::value);
                 return builder.not(in);
             };
         }
         return null;
     }
+
     public Specification<E> buildSpecification(Filter<String> filter, Function<Root<E>, Expression<String>> metaclassFn) {
         if (filter.getContains() != null) {
             return (root, query, builder) -> builder.like(builder.upper(metaclassFn.apply(root)), wrapLikeQuery(filter.getContains()));

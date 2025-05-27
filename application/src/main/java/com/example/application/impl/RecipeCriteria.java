@@ -87,7 +87,11 @@ public class RecipeCriteria implements Criteria {
         if (this == o) return true;
         if (!(o instanceof RecipeCriteria)) return false;
         RecipeCriteria that = (RecipeCriteria) o;
-        return getId().equals(that.getId()) && getCategory().equals(that.getCategory()) && getServings().equals(that.getServings()) && Objects.equals(getIngredients(), that.getIngredients()) && Objects.equals(getInstructions(), that.getInstructions());
+        return Objects.equals(getId(), that.getId()) &&
+               Objects.equals(getCategory(), that.getCategory()) &&
+               Objects.equals(getServings(), that.getServings()) &&
+               Objects.equals(getIngredients(), that.getIngredients()) &&
+               Objects.equals(getInstructions(), that.getInstructions());
     }
 
     @Override

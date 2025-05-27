@@ -99,7 +99,7 @@ public class RecipeEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override

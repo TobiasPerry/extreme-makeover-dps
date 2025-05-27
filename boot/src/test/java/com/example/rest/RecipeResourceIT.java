@@ -1,7 +1,7 @@
 package com.example.rest;
 
-
 import com.example.IntegrationTest;
+import com.example.config.TestSecurityConfig;
 import com.example.domain.model.Ingredient;
 import com.example.domain.model.Recipe;
 import com.example.domain.model.RecipeCategory;
@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,10 +36,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
+@Import(TestSecurityConfig.class)
 class RecipeResourceIT {
 
     private static final String API_KEY_HEADER = "x-api-key";
-    private static final String APIKey = "8ba20537-61f2-4ccd-a796-39478a6149a7";
+    private static final String APIKey = TestSecurityConfig.TEST_API_KEY;
 
     private static final RecipeCategory DEFAULT_VEGETARIAN = RecipeCategory.nonvegetarian;
     private static final RecipeCategory UPDATED_VEGETARIAN = RecipeCategory.vegetarian;
@@ -108,33 +110,43 @@ class RecipeResourceIT {
 
     @BeforeEach
     public void initTest() {
+        // Create and save the ingredient first
         Ingredient ingredient = createIngredientEntity(em);
-        ingredientRepository.save(ingredient);
-        IngredientsSet = Collections.singleton(ingredient);
-        recipe = createEntity(em, IngredientsSet);
+        ingredient = ingredientRepository.save(ingredient);
+        
+        // Create the recipe with the saved ingredient
+        recipe = createEntity(em, Collections.singleton(ingredient));
+        
+        // Save the recipe to ensure the relationship is established
+        recipe = recipeRepository.save(recipe);
     }
 
-//    @Test
-//    @Transactional
-//    void createRecipe() throws Exception {
-//        int databaseSizeBeforeCreate = recipeRepository.findAll(0,10).size();
-//        // Create the Recipe
-//        RecipeDTO recipeDTO = recipeMapper.toDto(recipe);
-//        restRecipeMockMvc
-//                .perform(post(ENTITY_API_URL)
-//                        .header(API_KEY_HEADER, APIKey)
-//                        .contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(recipeDTO)))
-//                .andExpect(status().isCreated());
-//
-//        // Validate the Recipe in the database
-//        List<Recipe> recipeList = recipeRepository.findAll(0,10);
-//        assertThat(recipeList).hasSize(databaseSizeBeforeCreate + 1);
-//        Recipe testRecipe = recipeList.get(recipeList.size() - 1);
-//        assertThat(testRecipe.getCategory()).isEqualTo(DEFAULT_VEGETARIAN);
-//        assertThat(testRecipe.getServings()).isEqualTo(DEFAULT_SERVINGS);
-//        assertThat(testRecipe.getInstructions()).isEqualTo(DEFAULT_INSTRUCTIONS);
-//        assertThat(testRecipe.getIngredients()).isEqualTo(IngredientsSet);
-//    }
+    @Test
+    @Transactional
+    void createRecipe() throws Exception {
+        int databaseSizeBeforeCreate = recipeRepository.findAll(0,10).size();
+        
+        // Create a new recipe with the existing ingredient
+        Recipe newRecipe = createEntity(em, recipe.getIngredients());
+        RecipeDTO recipeDTO = recipeMapper.toDto(newRecipe);
+        
+        restRecipeMockMvc
+                .perform(post(ENTITY_API_URL)
+                        .header(API_KEY_HEADER, APIKey)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtil.convertObjectToJsonBytes(recipeDTO)))
+                .andExpect(status().isCreated());
+
+        // Validate the Recipe in the database
+        List<Recipe> recipeList = recipeRepository.findAll(0,10);
+        assertThat(recipeList).hasSize(databaseSizeBeforeCreate + 1);
+        Recipe testRecipe = recipeList.get(recipeList.size() - 1);
+        assertThat(testRecipe.getCategory()).isEqualTo(DEFAULT_VEGETARIAN);
+        assertThat(testRecipe.getServings()).isEqualTo(DEFAULT_SERVINGS);
+        assertThat(testRecipe.getInstructions()).isEqualTo(DEFAULT_INSTRUCTIONS);
+        assertThat(testRecipe.getIngredients()).hasSize(1);
+        assertThat(testRecipe.getIngredients().iterator().next().getName()).isEqualTo(DEFAULT_INGREDIENT);
+    }
 
     @Test
     @Transactional
@@ -157,45 +169,6 @@ class RecipeResourceIT {
         assertThat(recipeList).hasSize(databaseSizeBeforeCreate);
     }
 
-//    @Test
-//    @Transactional
-//    void getRecipesCriteria() throws Exception {
-//        // Initialize the database
-//        recipeRepository.save(recipe);
-//
-//        // Get all the recipeList
-//        getWithCriteriaFound("");
-//
-//        // Id Filter
-//        getWithCriteriaFound("id.eq=" + recipe.getId().intValue());
-//        getWithCriteriaNotFound("id.eq=" + 9999L);
-//
-//        // Category Filter
-//        getWithCriteriaFound("category.eq=" + DEFAULT_VEGETARIAN);
-//        getWithCriteriaNotFound("category.eq=" + UPDATED_VEGETARIAN);
-//
-//        // Servings Filter
-//        getWithCriteriaFound("servings.eq=" + DEFAULT_SERVINGS);
-//        getWithCriteriaNotFound("servings.eq=" + UPDATED_SERVINGS);
-//
-//        // Ingredients Filter
-//        getWithCriteriaFound("ingredients.in=" + DEFAULT_INGREDIENT);
-//        getWithCriteriaNotFound("ingredients.nin=" + DEFAULT_INGREDIENT);
-//
-//        // Instructions Filter
-//        getWithCriteriaFound("instructions.contains=" + DEFAULT_INSTRUCTIONS);
-//        getWithCriteriaNotFound("instructions.notContains=" + DEFAULT_INSTRUCTIONS);
-//
-//        // Combined Filter
-//        getWithCriteriaFound("servings.eq=" + DEFAULT_SERVINGS + "&ingredients.in=" + DEFAULT_INGREDIENT);
-//        getWithCriteriaNotFound("servings.eq=" + UPDATED_SERVINGS + "&ingredients.in=" + DEFAULT_INGREDIENT);
-//
-//        // Combined Filter
-//        getWithCriteriaFound("instructions.contains=" + DEFAULT_INSTRUCTIONS + "&ingredients.nin=" + UPDATED_INGREDIENT);
-//        getWithCriteriaNotFound("instructions.contains=" + DEFAULT_INSTRUCTIONS + "&ingredients.in=" + UPDATED_INGREDIENT);
-//
-//    }
-
     private void getWithCriteriaFound(String filter) throws Exception {
         restRecipeMockMvc
                 .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter).header(API_KEY_HEADER, APIKey))
@@ -216,24 +189,6 @@ class RecipeResourceIT {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$", hasSize(0)));
     }
-
-//    @Test
-//    @Transactional
-//    void getRecipe() throws Exception {
-//        // Initialize the database
-//        recipeRepository.save(recipe);
-//
-//        // Get the recipe
-//        restRecipeMockMvc
-//                .perform(get(ENTITY_API_URL_ID, recipe.getId()).header(API_KEY_HEADER, APIKey))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-//                .andExpect(jsonPath("$.id").value(recipe.getId().intValue()))
-//                .andExpect(jsonPath("$.category").value(recipe.getCategory().toString()))
-//                .andExpect(jsonPath("$.servings").value(DEFAULT_SERVINGS))
-//                .andExpect(jsonPath("$.instructions").value(DEFAULT_INSTRUCTIONS))
-//                .andExpect(jsonPath("$.ingredients").isArray());
-//    }
 
     @Test
     @Transactional
@@ -258,50 +213,6 @@ class RecipeResourceIT {
         restRecipeMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE).header(API_KEY_HEADER, "wrong-api")
         ).andExpect(status().isUnauthorized());
     }
-
-//    @Test
-//    @Transactional
-//    void putExistingRecipe() throws Exception {
-//        // Initialize the database
-//        recipeRepository.save(recipe);
-//
-//        int databaseSizeBeforeUpdate = recipeRepository.findAll(0,10).size();
-//
-//        // Update the recipe
-//        Recipe updatedRecipe = recipeRepository.findById(recipe.getId()).get();
-//        Ingredient updatedIngredient = new Ingredient();
-//        updatedIngredient.setName(UPDATED_INGREDIENT);
-//
-//        ingredientRepository.save(updatedIngredient);
-//        // Disconnect from session so that the updates on updatedRecipe are not directly saved in db
-//        em.detach(updatedRecipe);
-//        Set<Ingredient> updatedIngredients = Collections.singleton(updatedIngredient);
-//        updatedRecipe.setCategory(UPDATED_VEGETARIAN);
-//        updatedRecipe.setServings(UPDATED_SERVINGS);
-//        updatedRecipe.setInstructions(UPDATED_INSTRUCTIONS);
-//        updatedRecipe.setIngredients(updatedIngredients);
-//
-//
-//        RecipeDTO recipeDTO = recipeMapper.toDto(updatedRecipe);
-//
-//        restRecipeMockMvc
-//                .perform(
-//                        put(ENTITY_API_URL_ID, recipeDTO.id())
-//                                .header(API_KEY_HEADER, APIKey)
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(TestUtil.convertObjectToJsonBytes(recipeDTO))
-//                )
-//                .andExpect(status().isOk());
-//
-//        // Validate the Recipe in the database
-//        List<Recipe> recipeList = recipeRepository.findAll(0,10);
-//        assertThat(recipeList).hasSize(databaseSizeBeforeUpdate);
-//        Recipe testRecipe = recipeList.get(recipeList.size() - 1);
-//        assertThat(testRecipe.getCategory()).isEqualTo(UPDATED_VEGETARIAN);
-//        assertThat(testRecipe.getServings()).isEqualTo(UPDATED_SERVINGS);
-//        assertThat(testRecipe.getInstructions()).isEqualTo(UPDATED_INSTRUCTIONS);
-//        assertThat(testRecipe.getIngredients()).isEqualTo(updatedIngredients);
-//    }
 
     @Test
     @Transactional
@@ -371,22 +282,4 @@ class RecipeResourceIT {
         List<Recipe> recipeList = recipeRepository.findAll(0,10);
         assertThat(recipeList).hasSize(databaseSizeBeforeUpdate);
     }
-
-//    @Test
-//    @Transactional
-//    void deleteRecipe() throws Exception {
-//        // Initialize the database
-//        recipeRepository.save(recipe);
-//
-//        int databaseSizeBeforeDelete = recipeRepository.findAll(0,10).size();
-//
-//        // Delete the recipe
-//        restRecipeMockMvc
-//                .perform(delete(ENTITY_API_URL_ID, recipe.getId()).header(API_KEY_HEADER, APIKey).accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isNoContent());
-//
-//        // Validate the database contains one less item
-//        List<Recipe> recipeList = recipeRepository.findAll(0,10);
-//        assertThat(recipeList).hasSize(databaseSizeBeforeDelete - 1);
-//    }
 }

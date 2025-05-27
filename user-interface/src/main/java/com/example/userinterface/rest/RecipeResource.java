@@ -48,10 +48,6 @@ public class RecipeResource {
         this.recipeMapper = recipeMapper;
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "hi";
-    }
     /**
      * {@code POST  /recipes} : Create a new recipe.
      *
