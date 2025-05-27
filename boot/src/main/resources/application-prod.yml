@@ -1,9 +1,11 @@
 spring:
+  config:
+    import: optional:file:prod.env[.properties]
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mariadb://localhost:3306/recipes?useLegacyDatetimeCode=false&serverTimezone=UTC
-    username: recipesUser
-    password: recipesPass
+    username: ${USERNAME}
+    password: ${PASSWORD}
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -19,4 +21,4 @@ server:
     enabled: true
 
 application:
-  api-key: 'f359105c-56b4-4268-bf23-c6ba706cfe86'
+  api-key: ${APPLICATION_API_KEY}

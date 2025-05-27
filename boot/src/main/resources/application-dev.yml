@@ -1,12 +1,14 @@
 spring:
+  config:
+    import: optional:file:dev.env[.properties]
   devtools:
     restart:
       enabled: true
   datasource:
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:recipeapi
-    username: recipesUser
-    password: recipesPass
+    username: ${USERNAME}
+    password: ${PASSWORD}
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
 
@@ -19,4 +21,4 @@ logging:
     root: debug
 
 application:
-  api-key: '8ba20537-61f2-4ccd-a796-39478a6149a7'
+  api-key: ${APPLICATION_API_KEY}
