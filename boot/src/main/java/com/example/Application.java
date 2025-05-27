@@ -17,8 +17,15 @@ import java.util.Optional;
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 @EnableConfigurationProperties({ApplicationProperties.class})
 @ComponentScan(basePackages = {
-        "com.example",          // módulo boot// donde esté tu SecurityConfig
-        "config"                     // si está directamente ahí
+        "com.example",
+        "com.example.userinterface",
+        "com.example.infrastructure",
+        "rest",
+        "config",
+        "impl",
+        "entity",
+        "repository",
+        "mapper"
 })
 public class Application {
     private static final Logger log = LoggerFactory.getLogger(Application.class);

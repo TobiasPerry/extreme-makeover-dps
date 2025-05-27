@@ -1,11 +1,13 @@
 package impl;
 import domain.model.Ingredient;
+import org.springframework.stereotype.Service;
 import port.in.IngredientService;
 import port.out.IngredientRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class IngredientServiceImpl implements IngredientService {
 
     private final IngredientRepository ingredientRepository;

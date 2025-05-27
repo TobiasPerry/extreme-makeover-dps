@@ -49,12 +49,17 @@ public class RecipeResource {
     private final RecipeMapper recipeMapper;
 
     public RecipeResource(RecipeService recipeService, RecipeQueryService recipeQueryService, RecipeRepository recipeRepository, RecipeMapper recipeMapper) {
+        System.out.println("RecipeController loaded");
         this.recipeService = recipeService;
         this.recipeQueryService = recipeQueryService;
         this.recipeRepository = recipeRepository;
         this.recipeMapper = recipeMapper;
     }
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "hi";
+    }
     /**
      * {@code POST  /recipes} : Create a new recipe.
      *
@@ -62,6 +67,7 @@ public class RecipeResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new recipeDTO, or with status {@code 400 (Bad Request)} if the recipe has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+
     @PostMapping("/recipes")
     public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) throws URISyntaxException {
         log.debug("REST request to save Recipe : {}", recipeDTO);

@@ -18,20 +18,7 @@ import java.util.stream.Collectors;
  */
 @Mapper(componentModel = "spring")
 public interface RecipeMapper extends EntityMapper<RecipeDTO, Recipe> {
-    @Mapping(target = "ingredients", source = "ingredients", qualifiedByName = "ingredientNameSet")
+    @Mapping(target = "ingredients", source = "ingredients")
     RecipeDTO toDto(Recipe s);
 
-    @Mapping(target = "removeIngredient", ignore = true)
-    Recipe toEntity(RecipeDTO recipeDTO);
-
-    @Named("ingredientName")
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    IngredientDTO toDtoIngredientName(Ingredient ingredient);
-
-    @Named("ingredientNameSet")
-    default Set<IngredientDTO> toDtoIngredientNameSet(Set<Ingredient> ingredient) {
-        return ingredient.stream().map(this::toDtoIngredientName).collect(Collectors.toSet());
-    }
 }
