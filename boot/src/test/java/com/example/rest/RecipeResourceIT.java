@@ -2,14 +2,12 @@ package com.example.rest;
 
 
 import com.example.IntegrationTest;
-import domain.model.Ingredient;
-import domain.model.Recipe;
-import domain.model.RecipeCategory;
-import dto.RecipeDTO;
-import entity.IngredientEntity;
-import entity.RecipeEntity;
+import com.example.domain.model.Ingredient;
+import com.example.domain.model.Recipe;
+import com.example.domain.model.RecipeCategory;
+import com.example.userinterface.dto.RecipeDTO;
 import jakarta.persistence.EntityManager;
-import mapper.RecipeMapper;
+import com.example.userinterface.mapper.RecipeMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +17,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import port.out.IngredientRepository;
-import port.out.RecipeRepository;
+import com.example.application.port.out.IngredientRepository;
+import com.example.application.port.out.RecipeRepository;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;

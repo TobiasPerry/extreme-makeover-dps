@@ -1,7 +1,7 @@
 package domain;
 
 
-import domain.model.Recipe;
+import com.example.domain.model.Recipe;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

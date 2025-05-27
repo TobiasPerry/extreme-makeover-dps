@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.boot.Application;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 

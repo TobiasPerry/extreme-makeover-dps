@@ -2,8 +2,8 @@ package com.example;
 
 
 
-import config.ApplicationProperties;
-import config.web.AuthenticationFilter;
+import com.example.userinterface.config.ApplicationProperties;
+import com.example.userinterface.config.web.AuthenticationFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

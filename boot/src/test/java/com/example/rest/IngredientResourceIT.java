@@ -2,20 +2,18 @@ package com.example.rest;
 
 
 import com.example.IntegrationTest;
-import domain.model.Ingredient;
-import dto.IngredientDTO;
-import entity.IngredientEntity;
+import com.example.domain.model.Ingredient;
+import com.example.userinterface.dto.IngredientDTO;
 import jakarta.persistence.EntityManager;
-import mapper.IngredientMapper;
+import com.example.userinterface.mapper.IngredientMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import port.out.IngredientRepository;
+import com.example.application.port.out.IngredientRepository;
 
 import java.util.List;
 import java.util.Random;
