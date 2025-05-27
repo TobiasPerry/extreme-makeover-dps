@@ -2,6 +2,7 @@ package com.example.application.impl;
 
 
 
+import com.example.domain.model.Ingredient;
 import com.example.domain.model.RecipeCategory;
 
 import java.util.Objects;
@@ -84,14 +85,12 @@ public class RecipeCriteria implements Criteria {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof RecipeCriteria)) return false;
-        RecipeCriteria that = (RecipeCriteria) o;
-        return Objects.equals(getId(), that.getId()) &&
-               Objects.equals(getCategory(), that.getCategory()) &&
-               Objects.equals(getServings(), that.getServings()) &&
-               Objects.equals(getIngredients(), that.getIngredients()) &&
-               Objects.equals(getInstructions(), that.getInstructions());
+
+        return o == this || (o instanceof RecipeCriteria other && id != null && Objects.equals(getId(), other.getId()) &&
+                Objects.equals(getCategory(), other.getCategory()) &&
+                Objects.equals(getServings(), other.getServings()) &&
+                Objects.equals(getIngredients(), other.getIngredients()) &&
+                Objects.equals(getInstructions(), other.getInstructions()));
     }
 
     @Override

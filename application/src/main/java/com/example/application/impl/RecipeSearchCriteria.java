@@ -1,6 +1,7 @@
 package com.example.application.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 public record RecipeSearchCriteria(
     String category,
@@ -10,8 +11,6 @@ public record RecipeSearchCriteria(
     List<String> ingredientNames
 ) {
     public RecipeSearchCriteria {
-        if (ingredientNames == null) {
-            ingredientNames = List.of();
-        }
+        ingredientNames = List.copyOf(Objects.requireNonNullElse(ingredientNames, List.of()));
     }
 } 

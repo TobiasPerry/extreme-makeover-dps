@@ -1,5 +1,7 @@
 package com.example.application.impl;
 
+import com.example.domain.model.Ingredient;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -78,15 +80,12 @@ public class Filter<FIELD_TYPE> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Filter)) return false;
-        Filter<?> filter = (Filter<?>) o;
-        return Objects.equals(eq, filter.eq) &&
-               Objects.equals(neq, filter.neq) &&
-               Objects.equals(in, filter.in) &&
-               Objects.equals(nin, filter.nin) &&
-               Objects.equals(contains, filter.contains) &&
-               Objects.equals(notContains, filter.notContains);
+        return o == this || (o instanceof Filter other && Objects.equals(eq, other.eq) &&
+                Objects.equals(neq, other.neq) &&
+                Objects.equals(in, other.in) &&
+                Objects.equals(nin, other.nin) &&
+                Objects.equals(contains, other.contains) &&
+                Objects.equals(notContains, other.notContains));
     }
 
     @Override
@@ -96,14 +95,14 @@ public class Filter<FIELD_TYPE> {
 
     @Override
     public String toString() {
-        String s = "Filter{";
-        if (eq != null) s += "eq=" + eq;
-        if (neq != null) s += "neq=" + neq;
-        if (in != null) s += "in=" + in;
-        if (nin != null) s += "nin=" + nin;
-        if (contains != null) s += "contains=" + contains;
-        if (notContains != null) s += "notContains=" + notContains;
-        s += '}';
-        return s;
+        StringBuilder sb = new StringBuilder("Filter{");
+        sb.append(eq != null ? "eq=" + eq : "");
+        sb.append(neq != null ?  ", neq=" + neq : "");
+        sb.append(in != null ?  ", in=" + in : "");
+        sb.append(nin != null ?  ", nin=" + nin : "");
+        sb.append(contains != null ? ", contains=" + contains : "");
+        sb.append(notContains != null ?  ", notContains=" + notContains : "");
+        sb.append('}');
+        return sb.toString();
     }
 }

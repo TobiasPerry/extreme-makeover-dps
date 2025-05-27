@@ -43,10 +43,7 @@ public class Ingredient {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Ingredient)) return false;
-        Ingredient that = (Ingredient) o;
-        return id != null && id.equals(that.id);
+        return o == this || (o instanceof Ingredient other && id != null && getId().equals(other.getId()));
     }
 
     @Override
