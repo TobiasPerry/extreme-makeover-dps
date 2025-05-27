@@ -1,9 +1,10 @@
-package com.parolaraul.recipeapi.service.impl;
+package service.impl;
 
-import com.parolaraul.recipeapi.domain.Ingredient;
-import com.parolaraul.recipeapi.repository.IngredientRepository;
-import com.parolaraul.recipeapi.service.dto.IngredientDTO;
-import com.parolaraul.recipeapi.service.mapper.IngredientMapper;
+
+import domain.model.Ingredient;
+import dto.IngredientDTO;
+import impl.IngredientServiceImpl;
+import mapper.IngredientMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,8 +13,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import port.out.IngredientRepository;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,9 +47,9 @@ public class IngredientServiceImplTest {
         when(ingredientRepository.save(ingredient)).thenReturn(ingredient);
         when(ingredientMapper.toDto(ingredient)).thenReturn(ingredientDTO);
 
-        IngredientDTO result = ingredientService.save(ingredientDTO);
+        Ingredient result = ingredientService.save(ingredientMapper.toEntity(ingredientDTO));
 
-        assertEquals(ingredientDTO, result);
+        assertEquals(ingredient, result);
     }
 
     @Test
@@ -56,9 +60,9 @@ public class IngredientServiceImplTest {
         when(ingredientRepository.save(ingredient)).thenReturn(ingredient);
         when(ingredientMapper.toDto(ingredient)).thenReturn(ingredientDTO);
 
-        IngredientDTO result = ingredientService.update(ingredientDTO);
+        Ingredient result = ingredientService.update(ingredientMapper.toEntity(ingredientDTO));
 
-        assertEquals(ingredientDTO, result);
+        assertEquals(ingredient, result);
     }
 
     @Test
@@ -66,14 +70,14 @@ public class IngredientServiceImplTest {
         Pageable pageable = Pageable.unpaged();
         Ingredient ingredient = new Ingredient();
         IngredientDTO ingredientDTO = new IngredientDTO(1L, null);
-        Page<Ingredient> ingredientPage = new PageImpl<>(Collections.singletonList(ingredient));
-        when(ingredientRepository.findAll(pageable)).thenReturn(ingredientPage);
+        List<Ingredient> ingredientPage = new ArrayList<>(Collections.singletonList(ingredient));
+        when(ingredientRepository.findAll(0,1)).thenReturn(ingredientPage);
         when(ingredientMapper.toDto(ingredient)).thenReturn(ingredientDTO);
 
-        Page<IngredientDTO> result = ingredientService.findAll(pageable);
+        List<Ingredient> result = ingredientService.findAll(0,1);
 
-        assertEquals(1, result.getContent().size());
-        assertEquals(ingredientDTO, result.getContent().get(0));
+        assertEquals(1, result.size());
+        assertEquals(ingredient, result.get(0));
     }
 
     @Test
@@ -84,9 +88,9 @@ public class IngredientServiceImplTest {
         when(ingredientRepository.findById(id)).thenReturn(Optional.of(ingredient));
         when(ingredientMapper.toDto(ingredient)).thenReturn(ingredientDTO);
 
-        Optional<IngredientDTO> result = ingredientService.findOne(id);
+        Optional<Ingredient> result = ingredientService.findOne(id);
 
-        assertEquals(ingredientDTO, result.orElse(null));
+        assertEquals(ingredient, result.orElse(null));
     }
 
     @Test

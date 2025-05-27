@@ -1,6 +1,9 @@
-package com.parolaraul.recipeapi.config.web;
+package com.example;
 
-import com.parolaraul.recipeapi.config.ApplicationProperties;
+
+
+import config.ApplicationProperties;
+import config.web.AuthenticationFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

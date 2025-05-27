@@ -1,15 +1,15 @@
-package com.parolaraul.recipeapi;
+package com.example;
 
-import com.parolaraul.recipeapi.repository.IngredientRepository;
-import com.parolaraul.recipeapi.repository.RecipeRepository;
-import com.parolaraul.recipeapi.service.IngredientService;
-import com.parolaraul.recipeapi.service.RecipeQBService;
-import com.parolaraul.recipeapi.service.RecipeService;
-import com.parolaraul.recipeapi.service.mapper.IngredientMapper;
-import com.parolaraul.recipeapi.service.mapper.RecipeMapper;
+import mapper.IngredientMapper;
+import mapper.RecipeMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import port.in.IngredientService;
+import port.in.RecipeQueryService;
+import port.in.RecipeService;
+import port.out.IngredientRepository;
+import port.out.RecipeRepository;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ApplicationTests {
 
     @Autowired
-    private RecipeQBService recipeQBService;
+    private RecipeQueryService recipeQBService;
 
     @Autowired
     private RecipeService recipeService;

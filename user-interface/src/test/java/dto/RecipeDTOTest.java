@@ -1,4 +1,4 @@
-package com.parolaraul.recipeapi.service.dto;
+package dto;
 
 import org.junit.jupiter.api.Test;
 

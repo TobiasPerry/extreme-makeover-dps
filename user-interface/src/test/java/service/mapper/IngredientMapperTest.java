@@ -1,5 +1,7 @@
-package com.parolaraul.recipeapi.service.mapper;
+package service.mapper;
 
+import mapper.IngredientMapper;
+import mapper.IngredientMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 
 class IngredientMapperTest {

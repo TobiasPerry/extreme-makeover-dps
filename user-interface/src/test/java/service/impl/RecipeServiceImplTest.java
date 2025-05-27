@@ -1,14 +1,16 @@
-package com.parolaraul.recipeapi.service.impl;
+package service.impl;
 
-import com.parolaraul.recipeapi.domain.Recipe;
-import com.parolaraul.recipeapi.repository.RecipeRepository;
-import com.parolaraul.recipeapi.service.dto.RecipeDTO;
-import com.parolaraul.recipeapi.service.mapper.RecipeMapper;
+
+import domain.model.Recipe;
+import dto.RecipeDTO;
+import impl.RecipeServiceImpl;
+import mapper.RecipeMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import port.out.RecipeRepository;
 
 import java.util.Optional;
 
@@ -39,11 +41,10 @@ public class RecipeServiceImplTest {
         when(recipeRepository.save(recipe)).thenReturn(recipe);
         when(recipeMapper.toDto(recipe)).thenReturn(recipeDTO);
 
-        RecipeDTO result = recipeService.save(recipeDTO);
+        Recipe result = recipeService.save(recipe);
 
-        assertEquals(recipeDTO, result);
+        assertEquals(recipe, result);
         verify(recipeRepository, times(1)).save(recipe);
-        verify(recipeMapper, times(1)).toDto(recipe);
     }
 
     @Test
@@ -54,26 +55,21 @@ public class RecipeServiceImplTest {
         when(recipeRepository.save(recipe)).thenReturn(recipe);
         when(recipeMapper.toDto(recipe)).thenReturn(recipeDTO);
 
-        RecipeDTO result = recipeService.update(recipeDTO);
+        Recipe result = recipeService.update(recipe);
 
-        assertEquals(recipeDTO, result);
+        assertEquals(recipe, result);
         verify(recipeRepository, times(1)).save(recipe);
-        verify(recipeMapper, times(1)).toDto(recipe);
     }
 
     @Test
     public void testFindOne() {
         Long id = 1L;
         Recipe recipe = new Recipe();
-        RecipeDTO recipeDTO = new RecipeDTO(null, null, null, null, null);
         when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(recipeMapper.toDto(recipe)).thenReturn(recipeDTO);
 
-        Optional<RecipeDTO> result = recipeService.findOne(id);
-
-        assertEquals(recipeDTO, result.orElse(null));
+        Optional<Recipe> result = recipeService.findOne(id);
+        assertEquals(recipe, result.orElse(null));
         verify(recipeRepository, times(1)).findById(id);
-        verify(recipeMapper, times(1)).toDto(recipe);
     }
 
     @Test

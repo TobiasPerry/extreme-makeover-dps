@@ -1,6 +1,7 @@
-package com.parolaraul.recipeapi.domain;
+package domain;
 
-import com.parolaraul.recipeapi.TestUtil;
+
+import domain.model.Recipe;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
