@@ -82,11 +82,11 @@ class IngredientEntityTest {
         entity3.setName("Test");
 
         // Test equals
-        assertTrue(entity1.equals(entity1));
-        assertTrue(entity1.equals(entity2));
-        assertFalse(entity1.equals(entity3));
-        assertFalse(entity1.equals(null));
-        assertFalse(entity1.equals(new Object()));
+        assertEquals(entity1, entity1);
+        assertEquals(entity1, entity2);
+        assertNotEquals(entity1, entity3);
+        assertNotEquals(null, entity1);
+        assertNotEquals(entity1, new Object());
 
         // Test hashCode
         assertEquals(entity1.hashCode(), entity2.hashCode());
