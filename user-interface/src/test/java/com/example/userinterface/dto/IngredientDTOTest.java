@@ -1,4 +1,4 @@
-package com.example.dto;
+package com.example.userinterface.dto;
 
 import com.example.userinterface.dto.IngredientDTO;
 import org.junit.jupiter.api.Test;
