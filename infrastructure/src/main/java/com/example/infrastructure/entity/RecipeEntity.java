@@ -127,6 +127,15 @@ public class RecipeEntity implements Serializable {
         entity.setCategory(recipe.getCategory());
         entity.setServings(recipe.getServings());
         entity.setInstructions(recipe.getInstructions());
+
+        if (recipe.getIngredients() != null) {
+            Set<IngredientEntity> ingredients = new HashSet<>();
+            for (var ingredient : recipe.getIngredients()) {
+                ingredients.add(IngredientEntity.fromDomain(ingredient));
+            }
+            entity.setIngredients(ingredients);
+        }
+
         return entity;
     }
 } 

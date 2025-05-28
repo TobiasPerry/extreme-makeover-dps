@@ -1,6 +1,7 @@
 package com.example.infrastructure.repository;
 
 
+import com.example.infrastructure.entity.IngredientEntity;
 import com.example.infrastructure.entity.RecipeEntity;
 import com.example.infrastructure.entity.IngredientEntity_;
 import com.example.domain.model.Recipe;
@@ -34,7 +35,17 @@ public class RecipeRepositoryAdapter implements RecipeRepository {
     @Override
     public Optional<Recipe> findById(Long id) {
         return jpaRecipeRepository.findById(id)
-                .map(RecipeEntity::toDomain);
+                .map(entity -> {
+                    Recipe recipe = entity.toDomain();
+                    var ingredientEntities = entity.getIngredients();
+                    if (ingredientEntities != null) {
+                        var ingredients = ingredientEntities.stream()
+                                .map(IngredientEntity::toDomain)
+                                .collect(Collectors.toSet());
+                        recipe.setIngredients(ingredients);
+                    }
+                    return recipe;
+                });
     }
 
     @Override
