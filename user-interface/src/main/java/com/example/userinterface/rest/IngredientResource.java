@@ -101,15 +101,15 @@ public class IngredientResource {
 
     /**
      * {@code GET  /ingredients} : get all the ingredients.
-     * @param pageNumber the page number.
      * @param pageSize the page size
+     * @param pageNumber the page number.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ingredients in body.
      */
     @GetMapping("/ingredients")
     public ResponseEntity<List<IngredientDTO>> getAllIngredients(@RequestParam int pageSize, @RequestParam int pageNumber) {
         log.debug("REST request to get a list of Ingredients");
 
-        List<Ingredient> ingredients = ingredientService.findAll(pageSize, pageNumber);
+        List<Ingredient> ingredients = ingredientService.findAll(pageNumber, pageSize);
 
         List<IngredientDTO> dtoList = ingredients.stream()
                 .map(ingredientMapper::toDto)

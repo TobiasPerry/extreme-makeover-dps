@@ -105,12 +105,12 @@ public class RecipeResource {
      * {@code GET  /recipes} : get recipes based on criteria or all.
      *
      * @param criteria the defining the filtering criteria.
-     * @param pageNumber the page number.
      * @param pageSize the page size
+     * @param pageNumber the page number.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of recipes in body.
      */
     @GetMapping("/recipes")
-    public ResponseEntity<List<RecipeDTO>> getRecipesByCriteria(RecipeCriteria criteria,
+    public ResponseEntity<List<RecipeDTO>> getRecipesByCriteria(@RequestBody RecipeCriteria criteria,
                                                                 @RequestParam int pageSize, @RequestParam int pageNumber) {
         log.debug("REST request to get Recipes by criteria");
         List<Recipe> recipes = recipeQueryService.findByCriteria(criteria, pageNumber, pageSize);
