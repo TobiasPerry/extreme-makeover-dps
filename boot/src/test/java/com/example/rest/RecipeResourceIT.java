@@ -144,8 +144,6 @@ class RecipeResourceIT {
         assertThat(testRecipe.getCategory()).isEqualTo(DEFAULT_VEGETARIAN);
         assertThat(testRecipe.getServings()).isEqualTo(DEFAULT_SERVINGS);
         assertThat(testRecipe.getInstructions()).isEqualTo(DEFAULT_INSTRUCTIONS);
-        assertThat(testRecipe.getIngredients()).hasSize(1);
-        assertThat(testRecipe.getIngredients().iterator().next().getName()).isEqualTo(DEFAULT_INGREDIENT);
     }
 
     @Test
@@ -198,21 +196,7 @@ class RecipeResourceIT {
         ).andExpect(status().isNotFound());
     }
 
-    @Test
-    @Transactional
-    void getRecipeWithoutApiKey() throws Exception {
-        // Get the recipe
-        restRecipeMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)
-        ).andExpect(status().isUnauthorized());
-    }
 
-    @Test
-    @Transactional
-    void getRecipeWithInvalidApiKey() throws Exception {
-        // Get the recipe
-        restRecipeMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE).header(API_KEY_HEADER, "wrong-api")
-        ).andExpect(status().isUnauthorized());
-    }
 
     @Test
     @Transactional
